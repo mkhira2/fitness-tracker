@@ -37,30 +37,32 @@ export class TrainingService {
     }
 
     startExercise(selectedId: string) {
-        this.runningExercise = this.availableExercises.find(ex => ex.id === selectedId);
-        this.exerciseChanged.next({ ...this.runningExercise });
+      // working with documents:
+      // this.db.doc('availableExercises/' + selectedId).update({lastSelected: new Date()});
+      this.runningExercise = this.availableExercises.find(ex => ex.id === selectedId);
+      this.exerciseChanged.next({ ...this.runningExercise });
     }
 
     completeExercise() {
-        this.addDataToDatabase({
-            ...this.runningExercise,
-            date: new Date(),
-            state: 'completed'
-        });
-        this.runningExercise = null;
-        this.exerciseChanged.next(null);
+      this.addDataToDatabase({
+          ...this.runningExercise,
+          date: new Date(),
+          state: 'completed'
+      });
+      this.runningExercise = null;
+      this.exerciseChanged.next(null);
     }
 
     cancelExercise(progress: number) {
-        this.addDataToDatabase({
-            ...this.runningExercise,
-            duration: this.runningExercise.duration * (progress / 100),
-            calories: this.runningExercise.calories * (progress / 100),
-            date: new Date(),
-            state: 'cancelled'
-        });
-        this.runningExercise = null;
-        this.exerciseChanged.next(null);
+      this.addDataToDatabase({
+          ...this.runningExercise,
+          duration: this.runningExercise.duration * (progress / 100),
+          calories: this.runningExercise.calories * (progress / 100),
+          date: new Date(),
+          state: 'cancelled'
+      });
+      this.runningExercise = null;
+      this.exerciseChanged.next(null);
     }
 
     getRunningExercise() {
@@ -68,15 +70,15 @@ export class TrainingService {
     }
 
     fetchCompletedOrCancelledExercises() {
-        this.db
-          .collection('finishedExercises')
-          .valueChanges()
-          .subscribe((exercises: Exercise[]) => {
-            this.finishedExercisesChanged.next(exercises);
-        });
+      this.db
+        .collection('finishedExercises')
+        .valueChanges()
+        .subscribe((exercises: Exercise[]) => {
+          this.finishedExercisesChanged.next(exercises);
+      });
     }
 
     private addDataToDatabase(exercise: Exercise) {
-        this.db.collection('finishedExercises').add(exercise);
+      this.db.collection('finishedExercises').add(exercise);
     }
 }
