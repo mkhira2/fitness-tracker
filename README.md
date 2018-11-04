@@ -12,6 +12,6 @@ git clone https://github.com/mkhira2/fitness-tracker.git
 cd fitness-tracker
 npm install
 ng serve --open
+```
 
 localhost:4200 will open automatically in the browser
-```
